@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clean Manager</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+  <!-- Modal -->
+  <div class="modal fade" id="clienteModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Adicionar Cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" placeholder="CNPJ do Cliente" id="cnpj">
+          <input type="text" placeholder="Nome do Cliente" id="nomeCliente">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="addcliente">Incluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+    <!-- Links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Salas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="funcionarios.html">Funcionários</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="gerenciamento.html">Gerenciamento</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="relatorio.html">Relatório</a>
+      </li>
+    </ul>
+
+  </nav>
+
+  <div class="d-flex justify-content-center">
+    <h2 class="my-3">Registre e verifique novos ambientes.</h3>
+  </div>
+
+  <div class="col-lg-8 mx-auto">
+    <h4 class="my-3">Selecione o cliente:</h4>
+    <div class="form-inline  mb-5">
+      <select class="form-control my-3 col-md-11" id="cliente">
+        <option hidden>🚨 Selecione seu Cliente 🚨</option>
+        <!-- <option>Limpeza</option> -->
+      </select>
+      <button type="button" class="btn btn-primary" id="abrirModal">+</button>
+    </div>
+  </div>
+
+
+  <div class="col-lg-8 mx-auto">
+    <div>
+      <p>Insira o código do ambiente. Ex: Banheiro número 1 do térreo -> 000.001.BAN</p>
+      <input type="text" class="form-control mb-3" placeholder="Código do ambiente" id="codigoAmbiente">
+      <p>Insira o nome do ambiente citando andar, tipo de ambiente e número correspondente. EX: Banheiro 1 - 2º Andar</p>
+      <input type="text" class="form-control mb-3" placeholder="Nome da Ambiente" id="nomeAmbiente">
+      <p>Insira o tipo do ambiente. Ex: Sala de Reunião</p>
+      <input type="text" class="form-control mb-3" placeholder="Tipo do Ambiente" id="tipoAmbiente">
+      <p>Para cada linha, insira a descrição do item que deve ser limpo no ambiente. Ex: Lavar os vasos</p>
+      <textarea class="form-control mb-3" rows="5" id="definicoes"
+        placeholder="Preencha com uma definição por linha"></textarea>
+      <button type="button" class="btn btn-primary" id="enviar">Enviar</button>
+    </div>
+    <div class="mt-5">
+      <h3>Suas salas:</h3>
+      <ul id="listaSalas" class="list-group my-5">
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+
+    firebase.initializeApp({
+      apiKey: "AIzaSyASUtfJNgxsPYzDSz1xz0KtKEhlUs-zinY",
+      authDomain: "cleanmanager-11e08.firebaseapp.com",
+      databaseURL: "https://cleanmanager-11e08.firebaseio.com",
+      projectId: "cleanmanager-11e08",
+      storageBucket: "cleanmanager-11e08.appspot.com",
+      messagingSenderId: "501601425155"
+    });
+
+    var clienteFirebase = firebase.firestore().collection("clientes");
+
+    $(document).ready(function () {
+      if (sessionStorage.getItem('cpf') == null)
+        window.open("login.html", "_self")
+      else {
+        $(document).ready(function () {
+          clienteFirebase.get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              $("#cliente").append(`<option id="${doc.id}">${doc.data().nome}</option>`)
+            })
+          })
+        });
+        $('#abrirModal').click(function () {
+          $('#clienteModal').modal();
+        });
+        $('#addcliente').click(function () {
+          var cnpj = $('#cnpj').val();
+          var nome = $('#nomeCliente').val();
+          firebase.firestore().collection("clientes").doc(cnpj).set({
+            cnpj: cnpj,
+            nome: nome
+          }).then(function () {
+            alert("Dados salvos.");
+            window.location.reload();
+          });
+        });
+      }
+    });
+
+    $('#cliente').change(function () {
+      var cliente = $("#cliente option:selected").attr('id');
+
+      var db = firebase.firestore().collection("clientes").doc(cliente).collection("salas");
+
+      $("#enviar").click(async function () {
+        var doc = $("#codigoAmbiente").val();
+
+        var class_name = $("#nomeAmbiente").val();
+
+        var class_type = $("#tipoAmbiente").val();
+
+        var data = {};
+
+        var lines = $("#definicoes").val().split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          data[lines[i]] = { "appropriate": false };
+        }
+        console.log(data)
+        db.doc(doc).set({
+          "definitions": data,
+          "class_name": class_name,
+          "class_type": class_type,
+          "cleaner_images": [],
+          "manager_images": [],
+          "finish_at": Date(),
+          "checked_at": null,
+
+        }).then(function () {
+          alert("Dados salvos.");
+          window.location.reload();
+        });
+      });
+
+      $(document).ready(function () {
+        db.get().then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            $("#listaSalas").append(
+              `<li class='list-group-item d-flex justify-content-between align-items-center'>${doc.id} || ${doc.data().class_name}</li>`)
+            // "<button class='btn' id="+doc.id+"><i class='fa fa-trash'></i></button></li>")
+          })
+        });
+
+        // $("ul").on("click", "button", function(e) {
+        //     e.preventDefault();
+        //     var id = $(this).attr('id');
+        //     db.doc(id).delete().then(function () {
+        //        alert("Dado deletado.")
+        //         window.location.reload();
+        //     });
+        // });
+      });
+
+    });
+
+
+
+  </script>
+</body>
+
+</html>

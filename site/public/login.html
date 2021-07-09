@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clean Manager</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+    <div class="col-lg-6 mx-auto">
+        <div class="my-5">
+            <h3>Entre com suas credenciais</h3>
+        </div>
+
+        <form class="my-5">
+            <div class="form-group">
+                <label>CPF</label>
+                <input class="form-control" aria-describedby="emailHelp" placeholder="Insira seu CPF"
+                    id="cpf">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" class="form-control" placeholder="Senha" id="senha">
+            </div>
+            <button type="button" class="btn btn-primary" id="entrarbtn">Entrar</button>
+        </form>
+    </div>
+
+</body>
+
+<script src="login.js"></script>
+
+</html>

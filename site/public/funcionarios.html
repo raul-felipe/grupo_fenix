@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clean Manager</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+    <!-- Links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Salas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link">Funcionários</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="gerenciamento.html">Gerenciamento</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="relatorio.html">Relatório</a>
+      </li>
+    </ul>
+
+  </nav>
+
+  <div class="d-flex justify-content-center">
+    <h2 class="my-3">Registre e verifique os Funcionários e Gestores.</h3>
+  </div>
+
+  <div class="col-lg-8 mx-auto">
+    <h4 class="my-3">Selecione o cliente:</h3>
+    <select class="form-control my-3" id="cliente">
+      <option hidden>🚨 Selecione seu Cliente 🚨</option>
+      <!-- <option>Limpeza</option> -->
+    </select>
+  </div>
+
+  <p class="mx-auto col-lg-8">Lembre-se de incluir primeiro a Gerência e posteriormente o Funcionário da limpeza.</p>
+
+  <!-- Abas de funcionário e gerencia -->
+  <ul class="nav nav-tabs col-lg-8 mx-auto my-3" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="gerencia-tab" data-toggle="tab" href="#gerencia" role="tab" aria-controls="gerencia"
+        aria-selected="true">Gerência</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="funcionario-tab" data-toggle="tab" href="#funcionario" role="tab"
+        aria-controls="funcionario" aria-selected="false">Funcionário</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <!-- Itens dentro da aba de Gerencia -->
+    <div class="tab-pane fade show active" id="gerencia" role="tabpanel" aria-labelledby="gerencia-tab">
+      <div class="col-lg-8 mx-auto">
+        <div>
+          <input type="text" class="form-control my-3" placeholder="Nome do Gestor" id="nomeGestor">
+          <input type="text" class="form-control my-3" placeholder="CPF" id="CPFGestor">
+          <input type="text" class="form-control my-3" placeholder="RG" id="RGGestor">
+          <button type="button" class="btn btn-primary btn-block" id="enviarGerente">Enviar</button>
+        </div>
+      </div>
+    </div>
+    <!-- Itens dentro da aba de funcionário -->
+    <div class="tab-pane fade" id="funcionario" role="tabpanel" aria-labelledby="funcionario-tab">
+      <div class="col-lg-8 mx-auto">
+        <div>
+          <input type="text" class="form-control my-3" placeholder="Nome do funcionário" id="nomeFuncionario">
+          <input type="text" class="form-control my-3" placeholder="CPF" id="CPFFuncionario">
+          <input type="text" class="form-control my-3" placeholder="RG" id="RGFuncionario">
+          <select class="form-control my-3" id="CPFgerencia">
+            <option hidden>Nome do Gestor</option>
+          </select>
+          <input type="text" class="form-control my-3" placeholder="Nome da Fila" id="fila">
+
+          <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+          <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+
+
+          <div class="container row my-3">
+            <ul id="listaFila" class="list-group col-sm overflow-auto" style="overflow-y: scroll; height:300px;">Fila:
+            </ul>
+
+            <ul id="listaSala" class="list-group col-sm overflow-auto" style="overflow-y: scroll; height:300px;">
+              Ambientes:
+
+            </ul>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-block" id="enviarFuncionario">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8 mx-auto my-3">
+    Funcionários registrados:
+    <ul class="list-group" id="listaFuncionarios">
+    </ul>
+  </div>
+
+  <script src="funcionarios.js"></script>
+
+</body>
+
+</html>
